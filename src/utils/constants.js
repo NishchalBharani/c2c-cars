@@ -19,7 +19,7 @@ export const API_ENDPOINTS = {
     FEATURED: '/cars/featured',
   },
   USERS: {
-    PROFILE: '/users/profile',
+    PROFILE: '/auth/profile',
     UPDATE: '/users/profile',
     VERIFICATION: '/users/verification',
   },
