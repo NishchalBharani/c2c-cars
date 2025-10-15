@@ -6,7 +6,7 @@ import { fetchUserProfile } from '../../store/slices/profileSlice';
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const { profile, loading, error } = useSelector((state) => state.profile.profile);
+  const { profile, loading, error } = useSelector((state) => state.profile?.profile);
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
