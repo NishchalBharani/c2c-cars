@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import store from './store/store';
 import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
+import AuthInitializer from './components/AuthInitializer'; // Add this
 import './index.css';
 
 // Create a client
@@ -15,6 +16,7 @@ function App() {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
+        <AuthInitializer /> {/* Add this component */}
         <Router>
           <div className="App">
             <Routes>

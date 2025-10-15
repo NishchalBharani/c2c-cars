@@ -11,7 +11,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const navItems = [
@@ -40,8 +40,8 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="flex items-center space-x-3 group"
             onClick={() => setIsOpen(false)}
           >
@@ -62,11 +62,10 @@ const Navbar = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center space-x-2 px-6 py-3 rounded-2xl font-medium transition-all duration-200 ${
-                    isActivePath(item.path)
+                  className={`flex items-center space-x-2 px-6 py-3 rounded-2xl font-medium transition-all duration-200 ${isActivePath(item.path)
                       ? 'bg-blue-50 text-blue-600 border border-blue-200'
                       : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-                  }`}
+                    }`}
                 >
                   {Icon && <Icon className="w-4 h-4" />}
                   <span>{item.label}</span>
@@ -86,7 +85,7 @@ const Navbar = () => {
                   <UserIcon className="w-5 h-5" />
                   <span>{user?.fullName || 'Profile'}</span>
                 </button>
-                
+
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-gray-200 py-2 z-50">
@@ -118,15 +117,16 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button - FIXED SECTION */}
           <div className="lg:hidden flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 <button
-                  onClick={handleProfileClick}
+                  onClick={() => navigate('/auth/profile')}
                   className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-blue-700 transition duration-200"
                 >
-                  <UserIcon className="w-4 h-4" />
+                  <User className="w-4 h-4" />
+                  <span className="text-sm">{user?.fullName?.split(' ')[0] || 'Profile'}</span>
                 </button>
                 <button
                   onClick={() => setIsOpen(!isOpen)}
@@ -142,6 +142,7 @@ const Navbar = () => {
                   className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-blue-700 transition duration-200"
                 >
                   <User className="w-4 h-4" />
+                  <span className="text-sm">Login</span>
                 </Link>
                 <button
                   onClick={() => setIsOpen(!isOpen)}
@@ -154,7 +155,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - FIXED SECTION */}
         {isOpen && (
           <div className="lg:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md">
             <div className="px-2 pt-4 pb-6 space-y-2">
@@ -164,11 +165,10 @@ const Navbar = () => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`flex items-center space-x-3 px-4 py-4 rounded-2xl font-medium transition-all duration-200 ${
-                      isActivePath(item.path)
+                    className={`flex items-center space-x-3 px-4 py-4 rounded-2xl font-medium transition-all duration-200 ${isActivePath(item.path)
                         ? 'bg-blue-50 text-blue-600 border border-blue-200'
                         : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-                    }`}
+                      }`}
                     onClick={() => setIsOpen(false)}
                   >
                     {Icon && <Icon className="w-5 h-5" />}
@@ -176,19 +176,27 @@ const Navbar = () => {
                   </Link>
                 );
               })}
-              
+
+              {/* FIXED: Show profile/logout when authenticated, login when not */}
               {isAuthenticated ? (
                 <div className="pt-4 border-t border-gray-200 space-y-2">
+                  <div className="px-4 py-3 bg-gray-50 rounded-2xl">
+                    <p className="text-sm text-gray-600">Signed in as</p>
+                    <p className="font-semibold text-gray-900">{user?.fullName}</p>
+                  </div>
                   <button
-                    onClick={handleProfileClick}
-                    className="flex items-center space-x-3 w-full px-4 py-4 rounded-2xl font-semibold bg-blue-600 text-white hover:bg-blue-700 transition duration-200"
+                    onClick={() => {
+                      navigate('/auth/profile');
+                      setIsOpen(false);
+                    }}
+                    className="flex items-center space-x-3 w-full px-4 py-4 rounded-2xl font-medium bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 transition duration-200"
                   >
-                    <UserIcon className="w-5 h-5" />
+                    <User className="w-5 h-5" />
                     <span className="text-lg">My Profile</span>
                   </button>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center space-x-3 w-full px-4 py-4 rounded-2xl font-semibold bg-red-600 text-white hover:bg-red-700 transition duration-200"
+                    className="flex items-center space-x-3 w-full px-4 py-4 rounded-2xl font-medium text-red-600 hover:bg-red-50 transition duration-200"
                   >
                     <LogOut className="w-5 h-5" />
                     <span className="text-lg">Logout</span>

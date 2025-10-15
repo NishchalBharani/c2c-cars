@@ -31,12 +31,30 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const initializeAuth = createAsyncThunk(
+  'auth/initialize',
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        // You can add a token validation API call here if needed
+        // For now, we'll just return the token exists
+        return { tokenExists: true };
+      }
+      return { tokenExists: false };
+    } catch (error) {
+      return rejectWithValue('Failed to initialize authentication');
+    }
+  }
+);
+
 const initialState = {
   user: null,
   isAuthenticated: false,
   loading: false,
   error: null,
   token: localStorage.getItem('authToken'),
+  initialized: false,
 };
 
 const authSlice = createSlice({
@@ -57,6 +75,7 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       state.token = null;
+      state.initialized = true;
       localStorage.removeItem('authToken');
     },
     clearError: (state) => {
@@ -75,12 +94,14 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isAuthenticated = true;
+        state.initialized = true;
         localStorage.setItem('authToken', action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.isAuthenticated = false;
+        state.initialized = true;
       })
       // Register cases
       .addCase(registerUser.pending, (state) => {
@@ -92,12 +113,26 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isAuthenticated = true;
+        state.initialized = true;
         localStorage.setItem('authToken', action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.isAuthenticated = false;
+        state.initialized = true;
+      })
+      // Initialize auth
+      .addCase(initializeAuth.fulfilled, (state, action) => {
+        state.initialized = true;
+        // If token exists but we don't have user data, you might want to fetch user profile here
+        if (state.token && !state.user) {
+          state.isAuthenticated = true;
+          // You can dispatch fetchUserProfile here if needed
+        }
+      })
+      .addCase(initializeAuth.rejected, (state) => {
+        state.initialized = true;
       });
   },
 });
