@@ -6,12 +6,18 @@ import { fetchUserProfile } from '../../store/slices/profileSlice';
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const { profile, loading, error } = useSelector((state) => state.profile?.profile);
-  const { user } = useSelector((state) => state.auth);
+  
+  // Add proper null checks for selectors
+  const { profile: profileData, loading, error } = useSelector((state) => state.profile || {});
+  const { user } = useSelector((state) => state.auth || {});
 
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
+
+  // Safe data extraction with fallbacks
+  const safeProfile = profileData?.profile || profileData || {};
+  const safeUser = user || {};
 
   if (loading) {
     return (
@@ -48,9 +54,9 @@ const Profile = () => {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8">
             <div className="flex items-center space-x-6">
               <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                {profile?.profile_image ? (
+                {safeProfile?.profile_image ? (
                   <img 
-                    src={profile.profile_image} 
+                    src={safeProfile.profile_image} 
                     alt="Profile" 
                     className="w-16 h-16 rounded-2xl object-cover"
                   />
@@ -60,10 +66,10 @@ const Profile = () => {
               </div>
               <div className="text-white">
                 <h2 className="text-2xl font-bold">
-                  {profile?.full_name || user?.fullName || 'User'}
+                  {safeProfile?.full_name || safeUser?.fullName || 'User'}
                 </h2>
                 <p className="text-blue-100 opacity-90">
-                  User ID: {profile?.user_id || 'N/A'}
+                  User ID: {safeProfile?.user_id || 'N/A'}
                 </p>
               </div>
             </div>
@@ -91,7 +97,7 @@ const Profile = () => {
                     <div>
                       <p className="text-sm text-gray-500">Email Address</p>
                       <p className="text-gray-900 font-medium">
-                        {profile?.email || user?.email || 'Not set'}
+                        {safeProfile?.email || safeUser?.email || 'Not set'}
                       </p>
                     </div>
                   </div>
@@ -101,7 +107,7 @@ const Profile = () => {
                     <div>
                       <p className="text-sm text-gray-500">Full Name</p>
                       <p className="text-gray-900 font-medium">
-                        {profile?.full_name || user?.fullName || 'Not set'}
+                        {safeProfile?.full_name || safeUser?.fullName || 'Not set'}
                       </p>
                     </div>
                   </div>
@@ -111,12 +117,12 @@ const Profile = () => {
                     <div>
                       <p className="text-sm text-gray-500">Location</p>
                       <p className="text-gray-900 font-medium">
-                        {profile?.city && profile?.country 
-                          ? `${profile.city}, ${profile.country}`
-                          : profile?.country 
-                          ? profile.country
-                          : profile?.city
-                          ? profile.city
+                        {safeProfile?.city && safeProfile?.country 
+                          ? `${safeProfile.city}, ${safeProfile.country}`
+                          : safeProfile?.country 
+                          ? safeProfile.country
+                          : safeProfile?.city
+                          ? safeProfile.city
                           : 'Not set'
                         }
                       </p>
@@ -136,7 +142,7 @@ const Profile = () => {
                   <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
                     <div>
                       <p className="text-sm text-gray-600">Account ID</p>
-                      <p className="text-gray-900 font-medium">{profile?.user_id || 'N/A'}</p>
+                      <p className="text-gray-900 font-medium">{safeProfile?.user_id || 'N/A'}</p>
                     </div>
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   </div>
@@ -153,11 +159,11 @@ const Profile = () => {
                     <div>
                       <p className="text-sm text-gray-600">Profile Completion</p>
                       <p className="text-gray-900 font-medium">
-                        {profile?.city && profile?.country ? 'Complete' : 'Incomplete'}
+                        {safeProfile?.city && safeProfile?.country ? 'Complete' : 'Incomplete'}
                       </p>
                     </div>
                     <div className={`w-2 h-2 rounded-full ${
-                      profile?.city && profile?.country ? 'bg-green-500' : 'bg-yellow-500'
+                      safeProfile?.city && safeProfile?.country ? 'bg-green-500' : 'bg-yellow-500'
                     }`}></div>
                   </div>
                 </div>
@@ -204,7 +210,7 @@ const Profile = () => {
             </div>
 
             {/* Profile Completion Prompt */}
-            {(!profile?.city || !profile?.country) && (
+            {(!safeProfile?.city || !safeProfile?.country) && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
