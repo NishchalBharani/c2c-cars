@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Car, User, Menu, X, Search, PlusCircle, LogOut, User as UserIcon } from 'lucide-react';
+import { Car, User, Menu, X, Search, PlusCircle, LogOut, List, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
@@ -63,8 +63,8 @@ const Navbar = () => {
                   key={item.path}
                   to={item.path}
                   className={`flex items-center space-x-2 px-6 py-3 rounded-2xl font-medium transition-all duration-200 ${isActivePath(item.path)
-                      ? 'bg-blue-50 text-blue-600 border border-blue-200'
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                    ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                     }`}
                 >
                   {Icon && <Icon className="w-4 h-4" />}
@@ -89,6 +89,16 @@ const Navbar = () => {
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-gray-200 py-2 z-50">
+                    <button
+                      onClick={() => {
+                        navigate('/my-listings');
+                        setIsProfileOpen(false);
+                      }}
+                      className="flex items-center space-x-3 w-full px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <List className="w-4 h-4" /> {/* Add this import at the top */}
+                      <span>My Listings</span>
+                    </button>
                     <button
                       onClick={handleProfileClick}
                       className="flex items-center space-x-3 w-full px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors duration-200"
@@ -120,19 +130,34 @@ const Navbar = () => {
           {/* Mobile menu button - FIXED SECTION */}
           <div className="lg:hidden flex items-center space-x-4">
             {isAuthenticated ? (
-              <div className="flex items-center space-x-3">
+              <div className="pt-4 border-t border-gray-200 space-y-2">
+                <div className="px-4 py-3 bg-gray-50 rounded-2xl">
+                  <p className="text-sm text-gray-600">Signed in as</p>
+                  <p className="font-semibold text-gray-900">{user?.fullName}</p>
+                </div>
                 <button
-                  onClick={() => navigate('/auth/profile')}
-                  className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-blue-700 transition duration-200"
+                  onClick={() => {
+                    navigate('/my-listings');
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center space-x-3 w-full px-4 py-4 rounded-2xl font-medium text-gray-700 hover:bg-gray-50 transition duration-200"
                 >
-                  <User className="w-4 h-4" />
-                  <span className="text-sm">{user?.fullName?.split(' ')[0] || 'Profile'}</span>
+                  <List className="w-5 h-5" />
+                  <span className="text-lg">My Listings</span>
                 </button>
                 <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="p-2 rounded-xl text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-200"
+                  onClick={handleProfileClick}
+                  className="flex items-center space-x-3 w-full px-4 py-4 rounded-2xl font-medium bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 transition duration-200"
                 >
-                  {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                  <User className="w-5 h-5" />
+                  <span className="text-lg">My Profile</span>
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-3 w-full px-4 py-4 rounded-2xl font-medium text-red-600 hover:bg-red-50 transition duration-200"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="text-lg">Logout</span>
                 </button>
               </div>
             ) : (
@@ -166,8 +191,8 @@ const Navbar = () => {
                     key={item.path}
                     to={item.path}
                     className={`flex items-center space-x-3 px-4 py-4 rounded-2xl font-medium transition-all duration-200 ${isActivePath(item.path)
-                        ? 'bg-blue-50 text-blue-600 border border-blue-200'
-                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                      ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                       }`}
                     onClick={() => setIsOpen(false)}
                   >

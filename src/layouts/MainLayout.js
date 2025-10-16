@@ -5,6 +5,7 @@ import Home from '../pages/Home';
 import SellCar from '../pages/SellCar';
 import Listings from '../pages/Listings';
 import ListingDetail from '../pages/ListingDetail';
+import MyListings from '../pages/MyListings'; // Add this import
 import ProtectedRoute from '../components/ProtectedRoute';
 
 const MainLayout = () => {
@@ -21,8 +22,12 @@ const MainLayout = () => {
               <SellCar />
             </ProtectedRoute>
           } />
+          <Route path="/my-listings" element={
+            <ProtectedRoute>
+              <MyListings />
+            </ProtectedRoute>
+          } />
           <Route path="/how-it-works" element={<div className="pt-16">How It Works - Coming Soon</div>} />
-          <Route path="/my-listings" element={<div className="pt-16">My Listings - Coming Soon</div>} />
         </Routes>
       </main>
     </div>

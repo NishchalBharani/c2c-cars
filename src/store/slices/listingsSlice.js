@@ -51,11 +51,14 @@ export const fetchMyListings = createAsyncThunk(
   'listings/fetchMyListings',
   async (_, { rejectWithValue }) => {
     try {
+      console.log('🔄 Starting fetchMyListings thunk');
       const response = await listingsService.getMyListings();
+      console.log('🔄 fetchMyListings response:', response);
       return response;
     } catch (error) {
+      console.error('❌ fetchMyListings error:', error);
       return rejectWithValue(
-        error.response?.data?.message || 'Failed to fetch listings'
+        error.response?.data?.message || 'Failed to fetch your listings'
       );
     }
   }
@@ -137,8 +140,9 @@ const listingsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchMyListings.fulfilled, (state, action) => {
+        console.log('✅ fetchMyListings.fulfilled:', action.payload);
         state.loading = false;
-        state.myListings = action.payload.listings || [];
+        state.myListings = action.payload; // Direct array assignment
       })
       .addCase(fetchMyListings.rejected, (state, action) => {
         state.loading = false;

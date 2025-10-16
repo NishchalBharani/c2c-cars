@@ -104,10 +104,8 @@ const SellCar = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log('Form submitted with data:', data); // Debug log
     try {
       const result = await dispatch(createListing(data)).unwrap();
-      console.log('Listing created successfully:', result); // Debug log
     } catch (error) {
       console.error('Failed to create listing:', error); // Debug log
       toast.error(error || 'Failed to create listing');
@@ -433,12 +431,12 @@ const SellCar = () => {
                     {loading ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Listing Car...</span>
+                        <span>Listing Vehicle...</span>
                       </>
                     ) : (
                       <>
                         <CheckCircle className="w-5 h-5" />
-                        <span>List My Car</span>
+                        <span>List My Vehicle</span>
                       </>
                     )}
                   </button>

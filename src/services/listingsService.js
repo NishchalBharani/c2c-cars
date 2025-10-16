@@ -28,8 +28,16 @@ export const listingsService = {
 
   // Get user's listings
   getMyListings: async () => {
-    const response = await api.get(API_ENDPOINTS.LISTINGS.MY_LISTINGS);
-    return response.data;
+    console.log('🔍 Fetching my listings from endpoint:', API_ENDPOINTS.LISTINGS.MY_LISTINGS);
+    console.log('🔍 Full URL:', api.defaults.baseURL + API_ENDPOINTS.LISTINGS.MY_LISTINGS);
+    console.log('🔍 Auth token:', localStorage.getItem('authToken'));
+    
+    try {
+      const response = await api.get(API_ENDPOINTS.LISTINGS.MY_LISTINGS);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   },
 
   // Update listing

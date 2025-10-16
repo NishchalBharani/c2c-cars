@@ -23,10 +23,6 @@ const Listings = () => {
         dispatch(fetchListings());
     }, [dispatch]);
 
-    useEffect(() => {
-        console.log('Listing data', listingsData)
-    })
-
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">

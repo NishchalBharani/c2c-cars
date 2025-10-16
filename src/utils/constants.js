@@ -15,7 +15,7 @@ export const API_ENDPOINTS = {
     DETAIL: '/listings/:id',
     UPDATE: '/listings/:id',
     DELETE: '/listings/:id',
-    MY_LISTINGS: '/listings/my',
+    MY_LISTINGS: '/listings/my-list',
   },
   CARS: {
     LIST: '/cars',
