@@ -2,29 +2,34 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import {
-  Plus,
-  Edit,
-  Trash2,
+import { 
+  Plus, 
+  Edit, 
+  Trash2, 
   Eye,
-  MapPin,
-  DollarSign,
+  MapPin, 
+  DollarSign, 
   Calendar,
   AlertCircle,
   CheckCircle,
   XCircle
 } from 'lucide-react';
 import { fetchMyListings } from '../store/slices/listingsSlice';
-import { API_BASE_URL } from '../utils/constants';
 
 const MyListings = () => {
   const dispatch = useDispatch();
-  const { myListings: myListingsData, loading, error } = useSelector((state) => state.listings);
-  const myListings = Array.isArray(myListingsData) ? myListingsData : (myListingsData?.listings || []);
+  const { myListings, loading, error } = useSelector((state) => state.listings);
 
   useEffect(() => {
     dispatch(fetchMyListings());
   }, [dispatch]);
+
+  // Add safe data access
+  const safeListings = Array.isArray(myListings) ? myListings : [];
+
+  const validListings = safeListings.filter(
+    (listing) => listing && typeof listing === 'object'
+  );
 
   if (loading) {
     return (
@@ -83,7 +88,7 @@ const MyListings = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          {myListings.length === 0 ? (
+          {validListings.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Plus className="w-8 h-8 text-gray-400" />
@@ -99,20 +104,20 @@ const MyListings = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {myListings.map((listing, index) => (
+              {validListings.map((listing, index) => (
                 <motion.div
-                  key={listing.listing_id}
+                  key={listing.listing_id || index}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
                   className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300"
                 >
-                  {/* Image */}
+                  {/* Image - FIXED: Safe access to images */}
                   <div className="relative h-48 bg-gray-200 overflow-hidden">
                     {listing.images && listing.images.length > 0 ? (
                       <img
                         src={listing.images[0]}
-                        alt={listing.title}
+                        alt={listing.title || 'Car listing'}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -121,38 +126,39 @@ const MyListings = () => {
                       </div>
                     )}
                     <div className="absolute top-3 left-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${listing.availability === 'available'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                        }`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        listing.availability === 'available' 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
                         {listing.availability === 'available' ? 'Active' : 'Sold'}
                       </span>
                     </div>
                   </div>
 
-                  {/* Content */}
+                  {/* Content - FIXED: Safe access to all properties */}
                   <div className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="font-semibold text-gray-900 line-clamp-2 flex-1">
-                        {listing.title}
+                        {listing.title || 'Untitled Listing'}
                       </h3>
                       <span className="text-lg font-bold text-blue-600 ml-2">
-                        ₹{parseFloat(listing.price).toLocaleString()}
+                        ₹{listing.price ? parseFloat(listing.price).toLocaleString() : '0'}
                       </span>
                     </div>
 
                     <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                      {listing.description}
+                      {listing.description || 'No description provided'}
                     </p>
 
                     <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                       <div className="flex items-center space-x-1">
                         <MapPin className="w-4 h-4" />
-                        <span>{listing.city}</span>
+                        <span>{listing.city || 'Location not set'}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Calendar className="w-4 h-4" />
-                        <span>{new Date(listing.created_at).toLocaleDateString()}</span>
+                        <span>{listing.created_at ? new Date(listing.created_at).toLocaleDateString() : 'Unknown date'}</span>
                       </div>
                     </div>
 
